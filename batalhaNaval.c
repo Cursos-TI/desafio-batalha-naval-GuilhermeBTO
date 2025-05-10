@@ -3,10 +3,6 @@
 #define COLUNAS 10
 
 int main() {
-    
-   // char letras[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-   //printf("%c\t", letras[10]);
-
     int matriz[LINHAS][COLUNAS] = {0};
     
     //navio na horizontal
