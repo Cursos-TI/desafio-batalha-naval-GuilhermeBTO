@@ -3,52 +3,89 @@
 #define COLUNAS 10
 
 int main() {
-    int matriz[LINHAS][COLUNAS] = {0};
+    int tabuleiro[LINHAS][COLUNAS] = {0};
+        
+    // Exemplo de navio na horizontal
+    for (int j = 2; j < 5; j++) {
+        tabuleiro[7][j] = 3;
+    }
+    // Exemplo de navio na vertical
+    for (int i = 0; i < 3; i++) {
+        tabuleiro[i][9] = 3;
+    }
+    // Exemplo de navio na diagonal principal
+    for (int i = 0; i < 3; i++) {
+        tabuleiro[5 + i][6 + i] = 3;
+    }  
     
-    //navio na horizontal
-    int linha_navio1 = 7;   // indice 7, 8 linha
-    int coluna_navio1 = 2;   // coluna C
-    int tamanho_navio1 = 3;
- 
-    for (int i = linha_navio1; i < linha_navio1 + tamanho_navio1; i++) {
-        for (int j = coluna_navio1; j < coluna_navio1 + tamanho_navio1; j++) {
-            matriz[linha_navio1][j] = 3; // parte do navio.
+    // HABILIDADE do tipo CONE (3x3)
+    int Cone[3][3] = {0};
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            if(j >= 1 - i && j <= 1 + i){
+                Cone[i][j] = 1;
+            }
+        }
+    }
+    // MATRIZ do tipo CRUZ (3x3)
+    int Cruz[3][3] = {0};
+    for(int i = 0; i < 3; i++){
+        Cruz[1][i] = 1;
+        Cruz[i][1] = 1;
+    }
+
+    // HABILIDADE do tipo Losango (5x5)
+    int Losango[5][5] = {0};
+    for(int i = 0; i < 5; i++){
+        int inicio = 2 - (i < 3 ? i : 4 - i);
+        int fim = 2 + (i < 3 ? i : 4 - i);
+        for(int j = inicio; j <= fim; j++){
+            Losango[i][j] = 1;
         }
     }
 
-     //navio na vertical
-    int linha_navio2 = 0;   // indice 0, 1 linha
-    int coluna_navio2 = 9;   // coluna J
-    int tamanho_navio2 = 3;
- 
-    for (int i = linha_navio2; i < linha_navio2 + tamanho_navio2; i++) {
-        for (int j = coluna_navio2; j < coluna_navio2 + tamanho_navio2; j++) {
-            matriz[i][coluna_navio2] = 3; // parte do navio.
+    // Sobrepor Cone no centro superior do tabuleiro (posição 1,1)
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            // Só sobrepõe se for água
+            if(Cone[i][j] == 1 && tabuleiro[i+1][j+1] == 0){
+                tabuleiro[i+1][j+1] = 5;
+            }
+        }
+    }
+    // Sobrepor Cruz no centro do tabuleiro (posição 4,4)
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            // Só sobrepõe se for água
+            if(Cruz[i][j] == 1 && tabuleiro[i+4][j+4] == 0){
+                tabuleiro[i+4][j+4] = 5;
+            }
+        }
+    }
+    // Sobrepor Losango no canto inferior direito (posição 6,6)
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < 5; j++){
+            // Só sobrepõe se for água
+            int lin = i+6-2;
+            int col = j+6-2;
+            if(Losango[i][j] == 1 && lin >= 0 && lin < LINHAS && col >= 0 && col < COLUNAS && tabuleiro[lin][col] == 0){
+                tabuleiro[lin][col] = 5;
+            }
         }
     }
 
-    //navio na diagonal da esquerda para direita descendo
-    int linha_navio3 = 5;   // indice 5, 6 linha
-    int coluna_navio3 = 6;   // coluna F
-    int tamanho_navio3 = 3;
- 
-    for (int i = 0; i < tamanho_navio3; i++) {
-        matriz[linha_navio3 + i][coluna_navio3 + i] = 3; // parte do navio.
-    } 
-    
-    //navio na diagonal da direita para esquerda descendo
-    int linha_navio4 = 1;   // indice 3, 4 linha
-    int coluna_navio4 = 3;   // coluna C
-    int tamanho_navio4 = 3;
- 
-    for (int i = 0; i < tamanho_navio4; i++) {
-        matriz[linha_navio4 + i][coluna_navio4 - i] = 3; // parte do navio, atribuindo valor à matriz.
-    }   
-    
-    //exibição da matriz completa
-    for (int i = 0; i < LINHAS; i++ ) {
-        for (int j = 0; j < COLUNAS; j++) {
-        printf("%d\t", matriz[i][j]);
+    // Exibir o tabuleiro
+    printf("\nTabuleiro:\n");
+    printf("Legendas: Navio - N, Agua - ~, Habilidade - *\n");
+    printf("\n"); // para pular linha
+    for(int i = 0; i < LINHAS; i++){
+        for(int j = 0; j < COLUNAS; j++){
+            if(tabuleiro[i][j] == 0)
+                printf(" ~ ");
+            else if(tabuleiro[i][j] == 3)
+                printf(" N ");
+            else if(tabuleiro[i][j] == 5)
+                printf(" * ");
         }
         printf("\n");
     }
